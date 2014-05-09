@@ -28,6 +28,7 @@ public class BasicTranslator implements Translator {
 	private static Logger LOG = Logger.getLogger(BasicTranslator.class);
 	private String translationFileName;
 
+
 	public BasicTranslator(String language, Map<String, String> translations) throws IOException {
 		this.language = language;
 		this.translations = translations;

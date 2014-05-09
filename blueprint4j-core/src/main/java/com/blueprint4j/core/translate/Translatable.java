@@ -10,4 +10,5 @@ public interface Translatable {
 
 	public void accept(Translator translator) throws IOException;
 
+
 }

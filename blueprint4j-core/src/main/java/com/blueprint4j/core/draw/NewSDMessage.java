@@ -39,5 +39,4 @@ public class NewSDMessage extends ApplicationItem{
 		translator.translate(this);
 	}
 
-
 }

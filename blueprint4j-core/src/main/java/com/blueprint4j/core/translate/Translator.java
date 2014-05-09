@@ -12,4 +12,6 @@ public interface Translator {
 
 	public String translate(String text) throws IOException;
 
+
 }
+

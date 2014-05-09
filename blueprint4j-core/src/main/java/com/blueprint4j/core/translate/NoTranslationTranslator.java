@@ -30,6 +30,7 @@ public class NoTranslationTranslator implements Translator {
 	public void translate(ApplicationItem applicationItem) throws IOException {
 	}
 
+
 	@Override
 	public String translate(String text) throws IOException {
 		return text;

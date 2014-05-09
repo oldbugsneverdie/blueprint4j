@@ -14,6 +14,7 @@ import com.blueprint4j.core.translate.Translator;
  */
 public abstract class NewSequenceDiagram extends ApplicationItem {
 
+
 	private List<NewSDMessage> messages = new ArrayList<NewSDMessage>();
 	
 	public NewSequenceDiagram(String name) {
