@@ -86,10 +86,5 @@ public class ApplicationItemDiagramCreator extends BasicDiagramCreator {
 			ApplicationItem toApplicationItem, int number, String name) {
 		createArrowBetweenClusters(fromApplicationItem.getName(), toApplicationItem.getName(), number, name, fromApplicationItem.getId(), toApplicationItem.getId());
 	}
-	
-
-
-
-	
 
 }
