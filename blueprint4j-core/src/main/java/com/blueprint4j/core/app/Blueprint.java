@@ -9,25 +9,23 @@ import com.blueprint4j.core.translate.Translator;
 
 public class Blueprint extends ApplicationItem {
 
+    List<Concept> concepts = new ArrayList<Concept>();
 	List<Drawing> drawings = new ArrayList<Drawing>();
-	List<Concept> concepts = new ArrayList<Concept>();
-	
+
 	public Blueprint(String name) {
 		super(name);
 	}
-	
-	protected void addDrawing(Drawing drawing) {
+
+    public void addConcept(Concept concept) {
+        concepts.add(concept);
+    }
+
+    protected void addDrawing(Drawing drawing) {
 		drawings.add(drawing);
 	}
 
 	public List<Drawing> getDrawings() {
 		return drawings;
-	}
-
-	protected Concept addConcept(String name) {
-		Concept concept = new Concept(name);
-		concepts.add(concept);
-		return concept;
 	}
 
 	public List<Concept> getConcepts() {

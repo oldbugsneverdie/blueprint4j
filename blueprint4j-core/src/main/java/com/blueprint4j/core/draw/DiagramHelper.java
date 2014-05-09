@@ -47,7 +47,13 @@ public class DiagramHelper {
 		return node;
 	}
 
-	public void createArrow(String fromNodeName, String arrowTail, String toNodeName, String arrowHead, String label) {
+    public Node createNode(String name, Node parentNode, String imageName) {
+        Node node = new Node(name,imageName);
+        parentNode.add(node);
+        return node;
+    }
+
+    public void createArrow(String fromNodeName, String arrowTail, String toNodeName, String arrowHead, String label) {
 		Arrow arrow = new Arrow(fromNodeName, arrowTail, toNodeName, arrowHead, label);
 		arrowsList.add(arrow);
 	}
@@ -87,7 +93,11 @@ public class DiagramHelper {
 		StringBuffer sb = new StringBuffer();
 		sb.append(newline);
 		if (parentNode.getNodeList().isEmpty()){
-			sb.append("\"" + parentNode.getName()+"\";" + newline);
+            if(parentNode.hasImageName()){
+                sb.append("\"" + parentNode.getName()+"\"[shape=\"none\" style=\"\" image=\""+parentNode.getImageName()+"\"];" + newline);
+            }else {
+			    sb.append("\"" + parentNode.getName()+"\";" + newline);
+            }
 		} else {
 			clusterIndex++;
 			sb.append(indent + "subgraph cluster" + clusterIndex + " {"+ newline);
@@ -168,12 +178,18 @@ public class DiagramHelper {
 
 		private String name;
 		private List<Node> nodeList = new ArrayList<Node>();
+        private String imageName =null;
 		
 		public Node(String name) {
-			this.setName(name);
+			this.name=name;
 		}
 
-		public void setName(String name) {
+        public Node(String name, String imageName) {
+            this.name=name;
+            this.imageName = imageName;
+        }
+
+        public void setName(String name) {
 			this.name = name;
 		}
 
@@ -195,7 +211,18 @@ public class DiagramHelper {
 			return node;
 		}
 
-	}
+        public String getImageName() {
+            return imageName;
+        }
+
+        public void setImageName(String imageName) {
+            this.imageName = imageName;
+        }
+
+        public boolean hasImageName(){
+            return (imageName!=null);
+        }
+    }
 	
 	public class Box extends Node {
 

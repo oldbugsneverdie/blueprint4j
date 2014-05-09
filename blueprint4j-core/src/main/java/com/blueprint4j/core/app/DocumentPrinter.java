@@ -9,7 +9,6 @@ import com.blueprint4j.core.doc.ApplicationDocument;
 import com.blueprint4j.core.doc.IDocument;
 import com.blueprint4j.core.doc.IDocumentGenerator;
 import com.blueprint4j.core.doc.html.HTMLDocument;
-import com.blueprint4j.core.draw.Block;
 import com.blueprint4j.core.draw.DiagramHelper;
 import com.blueprint4j.core.draw.DotRunner;
 import com.blueprint4j.core.draw.Drawing;
@@ -44,19 +43,11 @@ public class DocumentPrinter extends ApplicationDocument {
 			((HTMLDocument) doc).addStyleSheet(this.styleSheetName);
 		}
 
-		addTitle(doc, 0);
-		addConcepts(doc,1);
+		addTitle(doc, 1);
 		addDrawings(doc,1);
 		String tableOfContents = doc.getToc();
 		log.info("Finish Blueprint");
 		return docGenerator.save(tableOfContents, doc, getOutputDirectory(), title);
-	}
-
-	private void addConcepts(IDocument doc, int level) {
-		doc.addHeading(level, "Concepts");
-		for (Concept concept: blueprint.getConcepts()) {
-			addConcept(concept, doc, level+1);
-		}		
 	}
 
 	private void addConcept(Concept concept, IDocument doc, int level) {
@@ -73,21 +64,30 @@ public class DocumentPrinter extends ApplicationDocument {
 	}
 
 	private void addDrawing(Drawing drawing, IDocument doc, int level) {
-		
+
+        doc.addParagraph("");
 		doc.addParagraph("Drawing: "+ drawing.getName());
 		
 		DiagramHelper diagramHelper = new DiagramHelper();
-		Node rootNode = diagramHelper.createRootNode(blueprint.getName());
+		/**
+        Node rootNode = diagramHelper.createRootNode(blueprint.getName());
 		Node diagramNode = diagramHelper.createNode(drawing.getName(),
 				rootNode);
-		for (Block block : drawing.getBlocks()) {
-			Node blockNode = diagramHelper.createNode(block.getName(),
-					diagramNode);
+        */
+        Node diagramNode = diagramHelper.createRootNode(drawing.getName());
+		for (Concept concept : drawing.getConcepts()) {
+
+            Node blockNode=null;
+            if (concept.getImage()==null){
+    			blockNode = diagramHelper.createNode(concept.getName(),diagramNode);
+            }else {
+                blockNode = diagramHelper.createNode(concept.getName(),diagramNode, concept.getImage().getImageName());
+            }
 		}
 
 		for (Line line : drawing.getLines()) {
 			String arrowTail = DiagramHelper.ARROW_HEAD_NONE;
-			String arrowHead = DiagramHelper.ARROW_HEAD_NONE;
+			String arrowHead = DiagramHelper.ARROW_HEAD_NORMAL;
 
 			String fromEntityName = line.getFromApplicationItem().getName();
 			String toEntityName = line.getToApplicationItem().getName();
@@ -98,6 +98,7 @@ public class DocumentPrinter extends ApplicationDocument {
 					toEntityName, arrowHead, label);
 
 		}
+
 		String dotScript = diagramHelper.getDiagramScript();
 		String imageName = drawing.getName() + ".png";
 		DotRunner dotRunner;
@@ -105,12 +106,17 @@ public class DocumentPrinter extends ApplicationDocument {
 			dotRunner = new DotRunner(dotScript, getOutputDirectory().getCanonicalPath().toString(), imageName);
 			dotRunner.run();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Error running DotRunner: " + e.getMessage(),e);
 		}
 		
 		doc.addImage(imageName);
-	}
+
+        for (Concept concept : drawing.getConcepts()) {
+            addConcept(concept,doc,level);
+        }
+
+
+    }
 	
 	
 	@Override
@@ -123,7 +129,6 @@ public class DocumentPrinter extends ApplicationDocument {
 	private void addTitle(IDocument doc, int level) {
 		doc.addHeading(level, blueprint.getName());
 	}
-
 
 	public void setStyleSheet(String styleSheetName) {
 		this.styleSheetName = styleSheetName;

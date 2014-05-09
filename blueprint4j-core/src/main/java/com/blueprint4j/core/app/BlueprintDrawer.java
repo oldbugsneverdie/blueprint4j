@@ -8,7 +8,10 @@ import java.util.Properties;
 
 import com.blueprint4j.core.translate.Translator;
 
-public abstract class Drawer extends ApplicationItem {
+/**
+ * The place that holds all the Blueprint's
+ */
+public abstract class BlueprintDrawer extends ApplicationItem {
 
 	/**
 	 * Detects the client's operating system.
@@ -44,7 +47,7 @@ public abstract class Drawer extends ApplicationItem {
 	
 	private List<Blueprint> blueprints = new ArrayList<Blueprint>();
 	
-	public Drawer(String name) {
+	public BlueprintDrawer(String name) {
 		super(name);
 	}
 
@@ -54,8 +57,7 @@ public abstract class Drawer extends ApplicationItem {
 	
 
 	/**
-	 * Generating the Drawer means calling onCreate on all Blueprints, then call onLink on all Blueprints.
-	 * @param outputDirectory 
+	 * Generating the BlueprintDrawer means calling onCreate on all Blueprints, then call onLink on all Blueprints.
 	 */
 	public void generate() {
 		for (Blueprint blueprint : blueprints) {

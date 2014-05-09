@@ -1,5 +1,6 @@
 package com.blueprint4j.example;
 
+import com.blueprint4j.example.entities.EntityRelationShipsBlueprints;
 import com.blueprint4j.example.servers.ServerBlueprints;
 
 /**
@@ -11,18 +12,25 @@ public class Main {
 		/*
 		 * Create the example blueprints
 		 */
-		MyBlueprints myBlueprints = new MyBlueprints("Example blueprints");
+		MyBlueprintDrawer myBlueprintDrawer = new MyBlueprintDrawer("Example blueprints");
+
+   		/*
+		 * Blueprint that shows a simple Entity Relationship Diagram
+		 */
+        EntityRelationShipsBlueprints entityRelationShipsBlueprints = new EntityRelationShipsBlueprints("Overview entities");
+        myBlueprintDrawer.addBlueprint(entityRelationShipsBlueprints);
 
 		/*
-		 * Blueprint that shows information on the available servers
+		 * Blueprint that shows information on the available servers, using custom images
 		 */
-		ServerBlueprints serverBlueprints = new ServerBlueprints("Current servers that are in use");
-		myBlueprints.addBlueprint(serverBlueprints);
+		ServerBlueprints serverBlueprints = new ServerBlueprints("Server overview");
+		myBlueprintDrawer.addBlueprint(serverBlueprints);
+
 
 		/*
 		 * Generate all blueprints
 		 */
-		myBlueprints.generate();
+		myBlueprintDrawer.generate();
 
 	}
 }

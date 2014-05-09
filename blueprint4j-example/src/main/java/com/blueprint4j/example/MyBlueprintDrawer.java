@@ -4,17 +4,17 @@ import java.io.File;
 import java.io.IOException;
 
 import com.blueprint4j.core.app.DocumentPrinter;
-import com.blueprint4j.core.app.Drawer;
+import com.blueprint4j.core.app.BlueprintDrawer;
 import org.apache.log4j.Logger;
 
 import com.blueprint4j.core.app.Blueprint;
 import com.blueprint4j.core.doc.html.HTMLDocumentGenerator;
 
-public class MyBlueprints extends Drawer {
+public class MyBlueprintDrawer extends BlueprintDrawer {
 
-	private Logger log = Logger.getLogger("MyBlueprints");
+	private Logger log = Logger.getLogger("MyBlueprintDrawer");
 
-	public MyBlueprints(String name) {
+	public MyBlueprintDrawer(String name) {
 		super(name);
 
 	}

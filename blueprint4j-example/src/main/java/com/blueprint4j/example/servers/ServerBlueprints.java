@@ -1,9 +1,9 @@
 package com.blueprint4j.example.servers;
 
-import com.blueprint4j.core.app.Concept;
 import com.blueprint4j.core.app.Blueprint;
-import com.blueprint4j.core.draw.Block;
 import com.blueprint4j.core.draw.Drawing;
+import com.blueprint4j.core.draw.Image;
+import com.blueprint4j.core.draw.ImageType;
 import com.blueprint4j.core.draw.Line;
 
 /**
@@ -11,11 +11,14 @@ import com.blueprint4j.core.draw.Line;
  */
 public class ServerBlueprints extends Blueprint {
 
-	private Concept buildServer;
-	private Concept integrationTestServer;
-	private Concept acceptanceTestServer;
-	private Concept testServer;
-	private Concept productionServer;
+    /* Our servers */
+	private Server buildServer;
+	private Server integrationTestServer;
+	private Server acceptanceTestServer;
+	private Server testServer;
+	private Server productionServer;
+
+    private SoftwareModule jenkins;
 
 	public ServerBlueprints(String name) {
 		super(name);
@@ -26,28 +29,49 @@ public class ServerBlueprints extends Blueprint {
 		super.onCreate();
 
 		createConcepts();
-		addDrawing(createBasicCarrierDrawing());
+        createSoftwareModules();
+		addDrawing(createServerOverviewDrawing());
+        addDrawing(createBuildServerDetailsDrawing());
 
 	}
 
-	private void createConcepts() {
-		buildServer = addConcept("Build server");
-		integrationTestServer = addConcept("Integration test server");
-		acceptanceTestServer = addConcept("Acceptance test server");
-		testServer = addConcept("Test server");
-		productionServer = addConcept("Production server");
+    private void createConcepts() {
+
+        buildServer = new Server("Build server", this);
+        buildServer.setDescription("Creates the hourly and daily builds");
+
+		integrationTestServer = new Server("Integration test server", this);
+		acceptanceTestServer = new Server("Acceptance test server", this);
+		testServer = new Server("Test server", this);
+		productionServer = new Server("Production server", this);
 	}
 
-	private Drawing createBasicCarrierDrawing() {
+    private void createSoftwareModules() {
+        jenkins = new SoftwareModule("Jenkins", this);
+    }
 
-		Drawing drawing = new Drawing("Current servers");
-		Block block1 = drawing.drawBlock(buildServer);
-		Block block2 = drawing.drawBlock(integrationTestServer);
-        Block block3 = drawing.drawBlock(acceptanceTestServer);
-        Block block4 = drawing.drawBlock(testServer);
-        Block block5 = drawing.drawBlock(productionServer);
-		return drawing;
+
+    private Drawing createServerOverviewDrawing() {
+
+		Drawing drawing = new Drawing("Servers, currently in use");
+        drawing.addConcept(buildServer);
+        drawing.addConcept(testServer);
+        drawing.addConcept(integrationTestServer);
+        drawing.addConcept(acceptanceTestServer);
+        drawing.addConcept(productionServer);
+        Line line = drawing.drawLine(buildServer, "depends on", integrationTestServer);
+        return drawing;
 	}
+
+    private Drawing createBuildServerDetailsDrawing() {
+        Drawing drawing = new Drawing("Build server details");
+        buildServer.setImage(new Image(ImageType.RECTANGLE));
+        buildServer.addSoftwareModule(jenkins);
+        drawing.addConcept(buildServer);
+
+        return drawing;
+    }
+
 
 
 }
