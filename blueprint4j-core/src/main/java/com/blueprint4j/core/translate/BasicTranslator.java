@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.blueprint4j.core.app.Blueprint;
 import org.apache.log4j.Logger;
 
 import com.blueprint4j.core.app.ApplicationItem;
-import com.blueprint4j.core.app.RefCard;
 
 public class BasicTranslator implements Translator {
 
@@ -176,13 +176,13 @@ public class BasicTranslator implements Translator {
 
 	@Override
 	public void translate(ApplicationItem applicationItem) throws IOException {
-		if (applicationItem instanceof RefCard) {
-			translate((RefCard) applicationItem);
+		if (applicationItem instanceof Blueprint) {
+			translate((Blueprint) applicationItem);
 		}
 	}
 
-	public void translate(RefCard refCard) throws IOException {
-			translate(refCard);
+	public void translate(Blueprint blueprint) throws IOException {
+			translate(blueprint);
 	}
 
 	@Override

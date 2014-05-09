@@ -7,12 +7,12 @@ import java.util.List;
 import com.blueprint4j.core.draw.Drawing;
 import com.blueprint4j.core.translate.Translator;
 
-public class RefCard extends ApplicationItem {
+public class Blueprint extends ApplicationItem {
 
 	List<Drawing> drawings = new ArrayList<Drawing>();
 	List<Concept> concepts = new ArrayList<Concept>();
 	
-	public RefCard(String name) {
+	public Blueprint(String name) {
 		super(name);
 	}
 	

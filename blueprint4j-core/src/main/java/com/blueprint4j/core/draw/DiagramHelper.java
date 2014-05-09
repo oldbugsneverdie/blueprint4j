@@ -22,7 +22,7 @@ public class DiagramHelper {
 	private String nodeColor = "red";
 	private String nodeFontName = "Courier";
 
-	private String arrowColor = "blue";
+	private String arrowColor = "black";
 	private String arrowStyle = "dashed";
 
 	public DiagramHelper() {
@@ -55,7 +55,7 @@ public class DiagramHelper {
 	public String getDiagramScript() {
 		dotScript.append("digraph \""+rootNode.getName()+"\" {" + newline);
 		dotScript.append("nodesep=1.0 // increases the separation between nodes" + newline);
-		dotScript.append("node [color=" + nodeColor + ",fontname=" + nodeFontName + "]" + newline);
+        dotScript.append("node [shape=box,style=filled,fillcolor=\"#C0D0C0\"]" + newline);
 		dotScript.append("edge [color=" + arrowColor + ", style=" + arrowStyle + "] //setup options" + newline);
 		
 		dotScript.append(getScriptForNode(rootNode));

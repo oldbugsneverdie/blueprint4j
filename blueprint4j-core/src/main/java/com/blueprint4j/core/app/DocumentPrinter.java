@@ -19,26 +19,26 @@ import com.blueprint4j.core.translate.BasicTranslator;
 import com.blueprint4j.core.translate.Translator;
 
 
-public class RefCardDocument extends ApplicationDocument {
+public class DocumentPrinter extends ApplicationDocument {
 
 	private IDocumentGenerator docGenerator;
-	private Logger log = Logger.getLogger("RefCardDocument");
+	private Logger log = Logger.getLogger("DocumentPrinter");
 	private String styleSheetName = "default.css";
-	private RefCard refCard;
+	private Blueprint blueprint;
 	private Translator translator;
 
-	public RefCardDocument(RefCard refCard, File outputDirectory, String subDirectoryName, IDocumentGenerator docGenerator) {
+	public DocumentPrinter(Blueprint blueprint, File outputDirectory, String subDirectoryName, IDocumentGenerator docGenerator) {
 		super(outputDirectory, subDirectoryName);
-		this.refCard = refCard;
+		this.blueprint = blueprint;
 		this.docGenerator = docGenerator;
-		log.info("Create RefCard in " + outputDirectory);
+		log.info("Create Blueprint in " + outputDirectory);
 	}
 
 	public String generate() throws IOException {
 
-		String title = "RefCard-" + refCard.getName();
+		String title = "Blueprint-" + blueprint.getName();
 		String fileName = getOutputDirectory() + File.separator + title;
-		log.info("Start RefCard: " + title);
+		log.info("Start Blueprint: " + title);
 		IDocument doc = docGenerator.createDocument(title, fileName);
 		if (doc instanceof HTMLDocument) {
 			((HTMLDocument) doc).addStyleSheet(this.styleSheetName);
@@ -48,13 +48,13 @@ public class RefCardDocument extends ApplicationDocument {
 		addConcepts(doc,1);
 		addDrawings(doc,1);
 		String tableOfContents = doc.getToc();
-		log.info("Finish RefCard");
+		log.info("Finish Blueprint");
 		return docGenerator.save(tableOfContents, doc, getOutputDirectory(), title);
 	}
 
 	private void addConcepts(IDocument doc, int level) {
 		doc.addHeading(level, "Concepts");
-		for (Concept concept: refCard.getConcepts()) {
+		for (Concept concept: blueprint.getConcepts()) {
 			addConcept(concept, doc, level+1);
 		}		
 	}
@@ -66,7 +66,7 @@ public class RefCardDocument extends ApplicationDocument {
 
 	public void addDrawings(IDocument doc, int level){
 		doc.addHeading(level, "Drawings");
-		for (Drawing drawing : refCard.getDrawings()) {
+		for (Drawing drawing : blueprint.getDrawings()) {
 			addDrawing(drawing, doc, level+1);
 		}
 
@@ -77,7 +77,7 @@ public class RefCardDocument extends ApplicationDocument {
 		doc.addParagraph("Drawing: "+ drawing.getName());
 		
 		DiagramHelper diagramHelper = new DiagramHelper();
-		Node rootNode = diagramHelper.createRootNode(refCard.getName());
+		Node rootNode = diagramHelper.createRootNode(blueprint.getName());
 		Node diagramNode = diagramHelper.createNode(drawing.getName(),
 				rootNode);
 		for (Block block : drawing.getBlocks()) {
@@ -116,12 +116,12 @@ public class RefCardDocument extends ApplicationDocument {
 	@Override
 	public String generate(Translator translator) throws IOException {
 		this.translator = translator;
-		refCard.accept(translator);
+		blueprint.accept(translator);
 		return this.generate();
 	}
 
 	private void addTitle(IDocument doc, int level) {
-		doc.addHeading(level, refCard.getName());
+		doc.addHeading(level, blueprint.getName());
 	}
 
 

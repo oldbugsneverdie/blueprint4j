@@ -8,7 +8,7 @@ import java.util.Properties;
 
 import com.blueprint4j.core.translate.Translator;
 
-public abstract class RefCardApplication extends ApplicationItem {
+public abstract class Drawer extends ApplicationItem {
 
 	/**
 	 * Detects the client's operating system.
@@ -17,11 +17,10 @@ public abstract class RefCardApplication extends ApplicationItem {
 			.replaceAll("\\s", "");
 
 	/**
-	 * Load the refcard.properties file.
+	 * Load the properties file.
 	 */
-	protected final static String cfgProp = "refcard.properties";
+	protected final static String cfgProp = "blueprint4j.properties";
 	protected final static Properties configFile = new Properties() {
-		private final static long serialVersionUID = 1L;
 		{
 			try {
 				load(new FileInputStream(cfgProp));
@@ -43,34 +42,34 @@ public abstract class RefCardApplication extends ApplicationItem {
 	public static String DOT = configFile.getProperty("dotFor" + osName);
 	
 	
-	private List<RefCard> refCards = new ArrayList<RefCard>();
+	private List<Blueprint> blueprints = new ArrayList<Blueprint>();
 	
-	public RefCardApplication(String name) {
+	public Drawer(String name) {
 		super(name);
 	}
 
-	public void addRefCard(RefCard refCard){
-		refCards.add(refCard);
+	public void addBlueprint(Blueprint blueprint){
+		blueprints.add(blueprint);
 	}
 	
 
 	/**
-	 * Generating the RefCardApplication means calling onCreate on all RefCards, then call onLink on all RefCards.
+	 * Generating the Drawer means calling onCreate on all Blueprints, then call onLink on all Blueprints.
 	 * @param outputDirectory 
 	 */
 	public void generate() {
-		for (RefCard refCard : refCards) {
-			refCard.onCreate();
+		for (Blueprint blueprint : blueprints) {
+			blueprint.onCreate();
 		}
-		for (RefCard refCard : refCards) {
-			refCard.onLink();
+		for (Blueprint blueprint : blueprints) {
+			blueprint.onLink();
 		}
-		for (RefCard refCard : refCards) {
-			onGenerate(refCard);
+		for (Blueprint blueprint : blueprints) {
+			onGenerate(blueprint);
 		}
 	}
 	
-	protected abstract void onGenerate(RefCard refCard);
+	protected abstract void onGenerate(Blueprint blueprint);
 
 	@Override
 	public void accept(Translator translator) throws IOException {

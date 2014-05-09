@@ -18,7 +18,7 @@ public abstract class BasicDiagramCreator implements DrawingApplication{
 	
 	private String nodeColor = "red";
 	private String nodeFontName = "Courier";
-	private String arrowColor = "blue";
+	private String arrowColor = "black";
 	private String arrowStyle = "dashed";
 
 	private StringBuffer sb = new StringBuffer();
@@ -30,7 +30,7 @@ public abstract class BasicDiagramCreator implements DrawingApplication{
 		
 		sb.append("digraph \""+diagramName+"\" {" + newline);
 		sb.append("nodesep=1.0 // increases the separation between nodes" + newline);
-		sb.append("node [color=" + nodeColor + ",fontname=" + nodeFontName + "]" + newline);
+		sb.append("node [shape=box,style=filled,fillcolor=\"#C0D0C0\"]" + newline);
 		sb.append("edge [color=" + arrowColor + ", style=" + arrowStyle + "] //setup options" + newline);
 		sb.append("rankdir=\"TB\"" + newline);
 		sb.append("compound=true;" + newline);
