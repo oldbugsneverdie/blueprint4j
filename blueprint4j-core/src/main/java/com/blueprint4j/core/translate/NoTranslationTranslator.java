@@ -1,6 +1,7 @@
 package com.blueprint4j.core.translate;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -27,12 +28,16 @@ public class NoTranslationTranslator implements Translator {
 	}
 
 	@Override
-	public void translate(ApplicationItem applicationItem) throws IOException {
+	public void translateNameAndDescription(ApplicationItem applicationItem){
 	}
 
+    @Override
+    public void translateNameAndDescriptions(List<ApplicationItem> applicationItems) {
+    }
 
-	@Override
-	public String translate(String text) throws IOException {
+
+    @Override
+	public String translate(String text){
 		return text;
 	}
 

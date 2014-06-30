@@ -1,5 +1,6 @@
 package com.blueprint4j.core.app;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 import com.blueprint4j.core.change.Question;
 import com.blueprint4j.core.translate.Translatable;
+import com.blueprint4j.core.translate.Translator;
 
 /**
  * Base class for describing items in your specification/design/deployment.
@@ -245,5 +247,11 @@ public abstract class ApplicationItem implements Translatable {
 			applicationItem.markAllSubApplicationItemsAsNotSelected();
 		}
 	}
+
+    @Override
+    public void accept(Translator translator) {
+        this.name = translator.translate(this.name);
+        this.description = translator.translate(this.description);
+    }
 
 }

@@ -60,10 +60,7 @@ public abstract class NewSequenceDiagram extends ApplicationItem {
 		return result;
 
 	}
-	@Override
-	public void accept(Translator translator) throws IOException {
-		translator.translate(this);
-	}
+
 
 	public List<ApplicationItem> getAllApplicationItemsInThisDiagram(){
 		Set<ApplicationItem> applicationItems = new HashSet<ApplicationItem>();

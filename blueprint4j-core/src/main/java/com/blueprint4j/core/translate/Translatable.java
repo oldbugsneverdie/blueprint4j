@@ -8,7 +8,7 @@ import java.io.IOException;
  */
 public interface Translatable {
 
-	public void accept(Translator translator) throws IOException;
+	public void accept(Translator translator);
 
 
 }

@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import com.blueprint4j.core.app.Blueprint;
 import org.apache.log4j.Logger;
 
 import com.blueprint4j.core.app.ApplicationItem;
@@ -62,7 +62,7 @@ public class BasicTranslator implements Translator {
 
 	/**
 	 * @param text
-	 *            the text to translate (key in the translations map)
+	 *            the text to translateNameAndDescription (key in the translations map)
 	 * @return the translated text
 	 */
 	public String getTranslation(String text) {
@@ -174,19 +174,22 @@ public class BasicTranslator implements Translator {
 
 	}
 
-	@Override
-	public void translate(ApplicationItem applicationItem) throws IOException {
-		if (applicationItem instanceof Blueprint) {
-			translate((Blueprint) applicationItem);
-		}
-	}
+    @Override
+    public void translateNameAndDescriptions(List<ApplicationItem> applicationItems) {
+        for (ApplicationItem applicationItem:applicationItems){
+            translateNameAndDescription(applicationItem);
+        }
+    }
 
-	public void translate(Blueprint blueprint) throws IOException {
-			translate(blueprint);
-	}
+    @Override
+    public void translateNameAndDescription(ApplicationItem applicationItem) {
+        applicationItem.setName(translate(applicationItem.getName()));
+        applicationItem.setDescription(translate(applicationItem.getDescription()));
+    }
 
-	@Override
-	public String translate(String text) throws IOException {
+
+    @Override
+	public String translate(String text) {
 		return getTranslation(text);
 	}
 

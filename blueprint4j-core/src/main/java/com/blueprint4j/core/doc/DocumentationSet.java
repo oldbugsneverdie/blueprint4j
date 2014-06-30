@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blueprint4j.core.translate.TranslatorList;
+import com.blueprint4j.core.util.FileUtils;
 import org.apache.log4j.Logger;
 
-import com.blueprint4j.core.translate.BasicTranslator;
 import com.blueprint4j.core.translate.NoTranslationTranslator;
 import com.blueprint4j.core.translate.Translator;
 
@@ -21,17 +22,20 @@ import com.blueprint4j.core.translate.Translator;
 public abstract class DocumentationSet {
 
 	private String name;
+    private File baseDirectory;
 	private File outputDirectory;
+    private List<IDocumentGenerator> documentGenerators = new ArrayList<IDocumentGenerator>();
 	private List<Translator> translators = new ArrayList<Translator>();
 	private List<ApplicationDocument> applicationDocuments = new ArrayList<ApplicationDocument>();;
 	private String fileSeparator = System.getProperty("file.separator");
 	private static Logger log = Logger.getLogger(DocumentationSet.class);
 	private NoTranslationTranslator noTranslationTranslator = new NoTranslationTranslator();
 
-	public DocumentationSet(String name, File outputDirectory) throws IOException {
+	public DocumentationSet(String name, File baseDirectory) throws IOException {
 		this.name = name;
-		this.outputDirectory = outputDirectory;
-		addTranslators();
+		this.baseDirectory = baseDirectory;
+        FileUtils.validateIsDirectory(baseDirectory);
+        this.outputDirectory = FileUtils.createSubDirectory(baseDirectory,name);
 	}
 
 	public void setName(String name) {
@@ -42,50 +46,32 @@ public abstract class DocumentationSet {
 		return name;
 	}
 
-	protected void addTranslator(BasicTranslator translator) {
-		translators.add(translator);
-	}
-
-	public List<Translator> getTranslators() {
-		return translators;
-	}
-
-	protected void addApplicationDocument(ApplicationDocument applicationDocument) {
-		log.info("Add application document: " + applicationDocument.getClass().toString());
-		applicationDocuments.add(applicationDocument);
-	}
-
-	public File createSubDirectory(File outputDirectory, String subDirectoryName) throws IOException {
-		String currentPath = outputDirectory.getCanonicalPath();
-		String subDirectoryPath = currentPath + fileSeparator + subDirectoryName;
-		File subDirectory = new File(subDirectoryPath);
-		if (!subDirectory.exists()) {
-			if (!subDirectory.mkdir()) {
-				throw new IOException("Could not create directory '" + subDirectoryPath);
-			}
-		}
-		return subDirectory;
-	}
-
 	public void generate() throws IOException {
 
-		// Generate the application documents in the default language (no
-		// translation).
+        recreateGenerators();
+		/* Generate the application documents in the default language (no translation) */
 		recreateDocuments();
 		for (ApplicationDocument applicationDocument : applicationDocuments) {
-			log.info("Generate application document (no translation) in: " + applicationDocument.getOutputDirectory().getAbsolutePath());
-			applicationDocument.generate(noTranslationTranslator);
+			log.info("Generate application document (no translation) in: " + outputDirectory.getAbsolutePath());
+            applicationDocument.translate(noTranslationTranslator);
+            for(IDocumentGenerator documentGenerator: documentGenerators){
+                IDocument content = applicationDocument.generate(documentGenerator);
+                documentGenerator.save(content, outputDirectory, applicationDocument.getName());
+            }
 		}
 
-		// For each additional language, recreate the application documents,
-		// then translate.
+		/* For each additional language, recreate the application documents (to erase previous translations), then translateNameAndDescription. */
+        recreateTranslators();
 		for (Translator translator : translators) {
 			recreateDocuments();
-			File translationDirectory = createSubDirectory(outputDirectory, translator.getLanguage());
+			File translationDirectory = FileUtils.createSubDirectory(outputDirectory, translator.getLanguage());
 			for (ApplicationDocument applicationDocument : applicationDocuments) {
 				log.info("Generate application document (translated) in: " + translationDirectory.getAbsolutePath());
-				applicationDocument.setBaseDirectory(translationDirectory);
-				applicationDocument.generate(translator);
+                applicationDocument.translate(translator);
+                for(IDocumentGenerator documentGenerator: documentGenerators){
+                    IDocument content = applicationDocument.generate(documentGenerator);
+                    documentGenerator.save(content, translationDirectory, applicationDocument.getName());
+                }
 			}
 			translator.saveTranslationFile();
 		}
@@ -96,24 +82,28 @@ public abstract class DocumentationSet {
 		log.info("clear existing application documents");
 		applicationDocuments.clear();
 		log.info("add application documents");
-		addDocuments();
+		applicationDocuments = getApplicationDocumentList().getApplicationDocuments();
 	}
 
-	public File getOutputDirectory() {
-		return outputDirectory;
-	}
+    private void recreateTranslators() throws IOException {
+        log.info("recreate translators");
+        log.info("clear existing translators");
+        translators.clear();
+        log.info("add translators");
+        translators = getTranslatorList().getTranslators();
+    }
 
-	public File getOutputDirectory(String subDirectoryName) {
-		try {
-			return createSubDirectory(outputDirectory, subDirectoryName);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not create sub directory with name: " + subDirectoryName
-					+ ", in directory: " + outputDirectory.getAbsolutePath(), e);
-		}
-	}
+    private void recreateGenerators() throws IOException {
+        log.info("recreate generators");
+        log.info("clear existing generators");
+        documentGenerators.clear();
+        log.info("add generators");
+        documentGenerators = getDocumentGeneratorList().getDocumentGenerators();
+    }
 
-	public abstract void addTranslators() throws IOException;
+    public abstract ApplicationDocumentList getApplicationDocumentList();
+	public abstract TranslatorList getTranslatorList() throws IOException;
+    public abstract DocumentGeneratorList getDocumentGeneratorList();
 
-	public abstract void addDocuments();
 
 }

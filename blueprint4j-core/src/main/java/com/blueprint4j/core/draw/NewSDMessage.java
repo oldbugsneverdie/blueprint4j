@@ -34,9 +34,5 @@ public class NewSDMessage extends ApplicationItem{
 		this.toApplicationItem = toApplicationItem;
 	}
 
-	@Override
-	public void accept(Translator translator) throws IOException {
-		translator.translate(this);
-	}
 
 }

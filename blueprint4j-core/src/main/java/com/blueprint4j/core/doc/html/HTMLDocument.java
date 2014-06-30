@@ -6,6 +6,7 @@ import java.util.List;
 import com.blueprint4j.core.doc.IDocument;
 import com.blueprint4j.core.doc.IList;
 import com.blueprint4j.core.doc.ITable;
+import com.blueprint4j.core.draw.Drawing;
 
 
 /**
@@ -21,6 +22,7 @@ public class HTMLDocument implements IDocument {
 	int level2Number = 0;
 	int level3Number = 0;
 	int level4Number = 0;
+    private List<Drawing> drawings = new ArrayList<Drawing>();
 
 	public HTMLDocument() {
 		super();
@@ -246,9 +248,21 @@ public class HTMLDocument implements IDocument {
 	}
 
 	@Override
-	public void addImage(String href) {
+	public void addExternalImage(String href) {
 		doc.append("<img src='" + href + "'/>");
 	}
+
+    @Override
+    public void addDrawing(Drawing drawing) {
+        drawings.add(drawing);
+        doc.append("<img src='" + drawing.getName()+ ".png'/>");
+
+    }
+
+    public List<Drawing> getDrawings() {
+        return drawings;
+    }
+
 
 
 }

@@ -10,35 +10,23 @@ import com.blueprint4j.core.translate.Translator;
 public class Concept extends ApplicationItem {
 
     private Image image;
-    private Blueprint blueprint;
+    private List<Concept> subConcepts = new ArrayList<Concept>();
 
-	public Concept(String name, Blueprint blueprint) {
+	public Concept(String name) {
 		super(name);
-        this.blueprint = blueprint;
         this.image = new Image();
-        blueprint.addConcept(this);
 	}
 
-    public Concept(String name, Image image, Blueprint blueprint) {
+    public Concept(String name, Image image) {
         super(name);
         this.image= image;
-        this.blueprint = blueprint;
-        blueprint.addConcept(this);
     }
 
     public Concept(Concept concept) {
         super(concept.getName());
         this.image = new Image(concept.getImage());
-        this.blueprint = concept.getBlueprint();
         this.setDescription(concept.getDescription());
-        blueprint.addConcept(this);
     }
-
-    @Override
-	public void accept(Translator translator) throws IOException {
-		// TODO Auto-generated method stub
-
-	}
 
     public Image getImage() {
         return image;
@@ -48,11 +36,18 @@ public class Concept extends ApplicationItem {
         this.image = image;
     }
 
-    public Blueprint getBlueprint() {
-        return blueprint;
+    public void addConcept(Concept concept) {
+        subConcepts.add(concept);
+
+
     }
 
-    protected List<? extends Concept> getSubConcepts(){
-        return new ArrayList<Concept>();
-    };
+    public List<Concept> getSubConcepts() {
+        return subConcepts;
+    }
+
+
+    public boolean hasSubConcepts() {
+        return subConcepts.size()>0;
+    }
 }

@@ -32,7 +32,7 @@ public interface IDocumentGenerator {
 	 * outputDirectory with the given name.
 	 * 
 	 * @param tableOfContents
-	 * @param document
+	 * @param doc
 	 * @param outputDirectory
 	 * @param fileName
 	 * @return the path and filename of the saved file.
@@ -40,4 +40,5 @@ public interface IDocumentGenerator {
 	 */
 	public String save(String tableOfContents, IDocument doc, File outputDirectory, String fileName) throws IOException;
 
+    public String getFileExtension();
 }

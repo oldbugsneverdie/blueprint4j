@@ -1,6 +1,10 @@
 package com.blueprint4j.core.doc;
 
 
+import com.blueprint4j.core.draw.Drawing;
+
+import java.util.List;
+
 public interface IDocument {
 
 	public void addHeading(int level, String text);
@@ -19,7 +23,11 @@ public interface IDocument {
 
 	public void endList(IList list);
 
-	public void addImage(String href);
+	public void addExternalImage(String href);
+
+    public void addDrawing(Drawing drawing);
+
+    public List<Drawing> getDrawings();
 
 	public void addStyleSheet(String styleSheetName);
 

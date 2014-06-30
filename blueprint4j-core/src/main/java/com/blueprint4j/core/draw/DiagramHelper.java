@@ -1,5 +1,8 @@
 package com.blueprint4j.core.draw;
 
+import com.blueprint4j.core.app.Concept;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,6 +144,9 @@ public class DiagramHelper {
 		}
 		return result;
 	}
+
+
+
 
 	public void setNodeColor(String nodeColor) {
 		this.nodeColor = nodeColor;
