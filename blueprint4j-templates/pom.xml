@@ -39,23 +39,6 @@
         </configuration>
       </plugin>
 
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.1.1</version>
-            <executions>
-                <execution>
-                    <phase>test</phase>
-                    <goals>
-                        <goal>java</goal>
-                    </goals>
-                    <configuration>
-                        <mainClass>com.blueprint4j.template.Main</mainClass>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-
     </plugins>
   </build>
   

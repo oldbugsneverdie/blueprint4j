@@ -55,7 +55,7 @@
                         <goal>java</goal>
                     </goals>
                     <configuration>
-                        <mainClass>com.blueprint4j.template.Main</mainClass>
+                        <mainClass>com.blueprint4j.demo.Main</mainClass>
                     </configuration>
                 </execution>
             </executions>
