@@ -37,6 +37,20 @@ public class FileUtils {
         }
     }
 
+    public static void validateIsFile(String fileName){
+        File file = new File(fileName);
+        validateIsFile(file);
+    }
+
+    public static void validateIsFile(File file){
+        if (!file.exists()) {
+            throw new RuntimeException("File '" + file + "' does not exist" );
+        }
+        if (!file.isFile()) {
+            throw new RuntimeException("File '" + file + "' is not a file");
+        }
+    }
+
     private static File createSub(File outputDirectory, String subDirectoryName) throws IOException {
         String currentPath = outputDirectory.getCanonicalPath();
         String subDirectoryPath = currentPath + fileSeparator + subDirectoryName;
@@ -49,4 +63,14 @@ public class FileUtils {
         return subDirectory;
     }
 
+    public static void createFileIfItDoesNotExist(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException("Could not create new file: " + fileName,e);
+            }
+        }
+    }
 }

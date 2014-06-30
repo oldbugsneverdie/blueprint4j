@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.blueprint4j.core.util.FileUtils;
 import org.apache.log4j.Logger;
 
 import com.blueprint4j.core.app.ApplicationItem;
@@ -20,9 +21,11 @@ import com.blueprint4j.core.app.ApplicationItem;
 public class BasicTranslator implements Translator {
 
 	public static final String TODO = " [TODO]";
-	private static final String KEY_VALUE_SEPARATOR = "###";
+    private static final String KEY_VALUE_SEPARATOR = "###";
 	private static final Object NEWLINE = System.getProperty("line.separator");
-	private Map<String, String> translations = new HashMap<String, String>();
+    public static final String TRANSLATIONS_SUD_DIR_NAME = "translations";
+    public static final String TXT_FILE_EXTENSION = ".txt";
+    private Map<String, String> translations = new HashMap<String, String>();
 	private Map<String, String> toBeTranslated = new HashMap<String, String>();
 	private String language;
 	private static Logger LOG = Logger.getLogger(BasicTranslator.class);
@@ -41,21 +44,32 @@ public class BasicTranslator implements Translator {
 		}
 	}
 
-	public BasicTranslator(String language, String translationFileName) throws IOException {
+	public BasicTranslator(String language) throws IOException {
 
 		if (language.isEmpty()) {
 			throw new RuntimeException("Language can not be empty when creating a Translator");
 		}
 		this.language = language;
-		this.translationFileName = translationFileName;
-
-		validate(translationFileName);
-		Map<String, String> translated = loadTranslationFile(translationFileName);
-		translations.putAll(translated);
 
 	}
 
-	@Override
+    @Override
+    public void loadTranslations(File outputDirectory) {
+
+        try {
+            FileUtils.createSubDirectory(outputDirectory, TRANSLATIONS_SUD_DIR_NAME);
+            this.translationFileName = outputDirectory.getCanonicalPath().toString()+ FileUtils.fileSeparator+TRANSLATIONS_SUD_DIR_NAME+ FileUtils.fileSeparator+ language+ TXT_FILE_EXTENSION;
+            FileUtils.createFileIfItDoesNotExist(translationFileName);
+            Map<String, String> translated = loadTranslationFile(translationFileName);
+            translations.putAll(translated);
+        } catch (IOException e) {
+            throw new RuntimeException("Can lot load translations for " + language + ": " + e.getMessage(),e);
+        }
+
+    }
+
+
+    @Override
 	public String getLanguage() {
 		return language;
 	}
@@ -156,22 +170,6 @@ public class BasicTranslator implements Translator {
 
 	public int getNumberUntranslated() {
 		return toBeTranslated.size();
-	}
-
-	private void validate(String fileName) throws IOException {
-
-		File currentDirectory = new File(".");
-		String currentDirectoryName = currentDirectory.getCanonicalPath();
-
-		File file = new File(fileName);
-		if (!file.exists()) {
-			throw new RuntimeException("File '" + file + "' does not exist in " + currentDirectoryName);
-		}
-		if (!file.isFile()) {
-			throw new RuntimeException("File '" + file + "' has to be a file, not a directory (in "
-					+ currentDirectoryName + ")");
-		}
-
 	}
 
     @Override

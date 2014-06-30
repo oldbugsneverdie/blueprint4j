@@ -2,6 +2,7 @@ package com.blueprint4j.core.translate;
 
 import com.blueprint4j.core.app.ApplicationItem;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -17,6 +18,6 @@ public interface Translator {
 
     public void translateNameAndDescriptions(List<ApplicationItem> applicationItems);
 
-
+    public void loadTranslations(File outputDirectory);
 }
 

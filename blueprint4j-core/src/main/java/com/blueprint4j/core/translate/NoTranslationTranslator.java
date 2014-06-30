@@ -1,5 +1,6 @@
 package com.blueprint4j.core.translate;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class NoTranslationTranslator implements Translator {
 
 	@Override
 	public String getLanguage() {
-		return "no translation";
+		return "Default";
 	}
 
 	@Override
@@ -33,6 +34,11 @@ public class NoTranslationTranslator implements Translator {
 
     @Override
     public void translateNameAndDescriptions(List<ApplicationItem> applicationItems) {
+    }
+
+    @Override
+    public void loadTranslations(File outputDirectory) {
+
     }
 
 

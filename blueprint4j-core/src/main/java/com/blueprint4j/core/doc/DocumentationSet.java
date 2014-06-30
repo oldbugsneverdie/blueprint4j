@@ -21,9 +21,10 @@ import com.blueprint4j.core.translate.Translator;
  */
 public abstract class DocumentationSet {
 
-	private String name;
-    private File baseDirectory;
+    private static final String GENERATED_SUB_DIR = "generated";
+    private String name;
 	private File outputDirectory;
+    private File generateDirectory;
     private List<IDocumentGenerator> documentGenerators = new ArrayList<IDocumentGenerator>();
 	private List<Translator> translators = new ArrayList<Translator>();
 	private List<ApplicationDocument> applicationDocuments = new ArrayList<ApplicationDocument>();;
@@ -31,11 +32,10 @@ public abstract class DocumentationSet {
 	private static Logger log = Logger.getLogger(DocumentationSet.class);
 	private NoTranslationTranslator noTranslationTranslator = new NoTranslationTranslator();
 
-	public DocumentationSet(String name, File baseDirectory) throws IOException {
-		this.name = name;
-		this.baseDirectory = baseDirectory;
-        FileUtils.validateIsDirectory(baseDirectory);
-        this.outputDirectory = FileUtils.createSubDirectory(baseDirectory,name);
+	public DocumentationSet(File outputDirectory) throws IOException {
+		this.outputDirectory = outputDirectory;
+        FileUtils.validateIsDirectory(outputDirectory);
+        generateDirectory = FileUtils.createSubDirectory(outputDirectory, GENERATED_SUB_DIR);
 	}
 
 	public void setName(String name) {
@@ -49,24 +49,11 @@ public abstract class DocumentationSet {
 	public void generate() throws IOException {
 
         recreateGenerators();
-		/* Generate the application documents in the default language (no translation) */
-		recreateDocuments();
-		for (ApplicationDocument applicationDocument : applicationDocuments) {
-			log.info("Generate application document (no translation) in: " + outputDirectory.getAbsolutePath());
-            applicationDocument.translate(noTranslationTranslator);
-            for(IDocumentGenerator documentGenerator: documentGenerators){
-                IDocument content = applicationDocument.generate(documentGenerator);
-                documentGenerator.save(content, outputDirectory, applicationDocument.getName());
-            }
-		}
-
-		/* For each additional language, recreate the application documents (to erase previous translations), then translateNameAndDescription. */
         recreateTranslators();
 		for (Translator translator : translators) {
 			recreateDocuments();
-			File translationDirectory = FileUtils.createSubDirectory(outputDirectory, translator.getLanguage());
+			File translationDirectory = FileUtils.createSubDirectory(generateDirectory, translator.getLanguage());
 			for (ApplicationDocument applicationDocument : applicationDocuments) {
-				log.info("Generate application document (translated) in: " + translationDirectory.getAbsolutePath());
                 applicationDocument.translate(translator);
                 for(IDocumentGenerator documentGenerator: documentGenerators){
                     IDocument content = applicationDocument.generate(documentGenerator);
@@ -75,6 +62,7 @@ public abstract class DocumentationSet {
 			}
 			translator.saveTranslationFile();
 		}
+
 	}
 
 	private void recreateDocuments() {
@@ -91,6 +79,8 @@ public abstract class DocumentationSet {
         translators.clear();
         log.info("add translators");
         translators = getTranslatorList().getTranslators();
+        translators.add(noTranslationTranslator);
+        loadTranslations(translators);
     }
 
     private void recreateGenerators() throws IOException {
@@ -100,6 +90,13 @@ public abstract class DocumentationSet {
         log.info("add generators");
         documentGenerators = getDocumentGeneratorList().getDocumentGenerators();
     }
+
+    private void loadTranslations(List<Translator> translators) {
+        for (Translator translator:translators){
+            translator.loadTranslations(outputDirectory);
+        }
+    }
+
 
     public abstract ApplicationDocumentList getApplicationDocumentList();
 	public abstract TranslatorList getTranslatorList() throws IOException;
