@@ -53,9 +53,11 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
 		/* Define output directory*/
-        //File outputDir = new File(System.getProperty("user.dir"));
+        File outputDir = new File(System.getProperty("user.dir"));
+        if (outputDirectory!=null && !outputDirectory.isEmpty()){
+            outputDir = new File(outputDirectory);
+        }
 
-        File outputDir = new File(outputDirectory);
         //TODO rename to Project? project = set of translatable documents
         /* Define project */
         DocumentationSet documentationSet = new DocumentationSet(outputDir) {
@@ -66,6 +68,7 @@ public class Main {
                 ApplicationDocumentList applicationDocumentList = new ApplicationDocumentList();
                 applicationDocumentList.add(new MyEntityRelationShipDiagram());
                 applicationDocumentList.add(new MyServerDiagram());
+                applicationDocumentList.add(new MyMockup());
                 return applicationDocumentList;
 
             }
@@ -90,21 +93,6 @@ public class Main {
 
         /* Generate documents */
         documentationSet.generate();
-
-
-//		MyBlueprintProject myBlueprintProject = new MyBlueprintProject("Demo of Blueprint4j");
-//
-//		/*
-//		 * Blueprint that shows information on the available servers, using custom images
-//		 */
-////		ServerDiagram serverDiagram = new ServerDiagram("Server overview");
-////		myBlueprintProject.addBlueprint(serverDiagram);
-//
-//
-//		/*
-//		 * Generate all blueprints
-//		 */
-//		myBlueprintProject.generate();
 
 	}
 }
