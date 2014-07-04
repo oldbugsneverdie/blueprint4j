@@ -46,7 +46,7 @@ public class Main {
             outputDir = new File(System.getProperty("user.dir"));
         }
 
-        /* Define the project documentation*/
+        /* Define the project documentation */
         DocumentationSet documentationSet = new DocumentationSet(outputDir) {
 
             @Override
