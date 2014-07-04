@@ -1,21 +1,35 @@
 package com.blueprint4j.core.draw;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
 public class DotRunner {
 
-	private Logger log = Logger.getLogger("DotRunner");
+    protected final static String cfgProp = "blueprint4j.properties";
+    protected final static Properties configFile = new Properties() {
+        {
+            try {
+                load(new FileInputStream(cfgProp));
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }
+    };
+
+    /**
+     * The directory where temporary files will be created.
+     */
+    public static String pathToDot = configFile.getProperty("pathToDot");
+
+    private Logger log = Logger.getLogger("DotRunner");
 	private String dotScript;
 	private String directoryName;
 	private String outputFileName;
 
-	public DotRunner(String dotScript, String directoryName, String outputFileName) {
+    public DotRunner(String dotScript, String directoryName, String outputFileName) {
 		this.dotScript = dotScript;
 		this.directoryName = directoryName;
 		this.outputFileName = outputFileName;
@@ -47,8 +61,7 @@ public class DotRunner {
 		}
 		log.info("Create image for: " + dotScriptName);
 
-		//TODO through property
-		 ProcessBuilder pb = new ProcessBuilder("/usr/bin/dot", "-Tpng",  "-o" + dotOutputName, dotScriptName);
+		 ProcessBuilder pb = new ProcessBuilder(pathToDot, "-Tpng",  "-o" + dotOutputName, dotScriptName);
 		 Map<String, String> env = pb.environment();
 		 env.put("VAR1", "myValue");
 		 try {
@@ -59,5 +72,6 @@ public class DotRunner {
 		}
 		
 	}
-	
+
+
 }
