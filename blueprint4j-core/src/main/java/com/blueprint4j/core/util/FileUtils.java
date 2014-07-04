@@ -30,10 +30,10 @@ public class FileUtils {
 
     public static void validateIsDirectory(File baseDirectory) {
         if (baseDirectory == null) {
-            throw new RuntimeException("Base directory can not be null");
+            throw new RuntimeException("Directory can not be null");
         }
         if (!baseDirectory.isDirectory()) {
-            throw new RuntimeException("Base directory is not a directory: " + baseDirectory);
+            throw new RuntimeException("Directory is not a directory: " + baseDirectory);
         }
     }
 

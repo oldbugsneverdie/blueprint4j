@@ -19,12 +19,6 @@ import java.util.Properties;
 public class Main {
 
     /**
-     * Detects the client's operating system.
-     */
-    protected final static String osName = System.getProperty("os.name")
-            .replaceAll("\\s", "");
-
-    /**
      * Load the properties file.
      */
     protected final static String cfgProp = "blueprint4j.properties";
@@ -41,25 +35,18 @@ public class Main {
     /**
      * The directory where temporary files will be created.
      */
-    public static String outputDirectory = configFile
-            .getProperty("outputDirFor" + osName);
-
-    /**
-     * Where is your dot program located? It will be called externally.
-     */
-    public static String DOT = configFile.getProperty("dotFor" + osName);
+    public static String outputDirectory = configFile.getProperty("outputDirectory");
 
 
     public static void main(String[] args) throws IOException {
 
-		/* Define output directory*/
-        File outputDir = new File(System.getProperty("user.dir"));
-        if (outputDirectory!=null && !outputDirectory.isEmpty()){
-            outputDir = new File(outputDirectory);
+		/* Read output directory from properties, otherwise use current dir*/
+        File outputDir = new File(outputDirectory);
+        if (outputDir ==null && !outputDir.exists()){
+            outputDir = new File(System.getProperty("user.dir"));
         }
 
-        //TODO rename to Project? project = set of translatable documents
-        /* Define project */
+        /* Define the project documentation*/
         DocumentationSet documentationSet = new DocumentationSet(outputDir) {
 
             @Override

@@ -4,7 +4,7 @@ cd ../blueprint4j-templates
 mvn clean install
 cd ../blueprint4j-demo
 mvn clean install
-echo "================================================="
-echo "= Check the output in the ´generated´ directory ="
-echo "================================================="
+echo "======================================================"
+echo "Please check the output in the ´generated´ directory ="
+echo "======================================================"
 

@@ -57,7 +57,8 @@ public abstract class DocumentationSet {
                 applicationDocument.translate(translator);
                 for(IDocumentGenerator documentGenerator: documentGenerators){
                     IDocument content = applicationDocument.generate(documentGenerator);
-                    documentGenerator.save(content, translationDirectory, applicationDocument.getName());
+                    File documentDirectory = FileUtils.createSubDirectory(translationDirectory, applicationDocument.getName());
+                    documentGenerator.save(content, documentDirectory, applicationDocument.getName());
                 }
 			}
 			translator.saveTranslationFile();
