@@ -1,4 +1,4 @@
-package com.blueprint4j.template.entities;
+package com.blueprint4j.template.diagram;
 
 import com.blueprint4j.core.app.Concept;
 import com.blueprint4j.core.doc.ApplicationDocument;
@@ -6,6 +6,8 @@ import com.blueprint4j.core.doc.IDocument;
 import com.blueprint4j.core.doc.IDocumentGenerator;
 import com.blueprint4j.core.draw.Drawing;
 import com.blueprint4j.core.translate.Translator;
+import com.blueprint4j.template.entities.Entity;
+import com.blueprint4j.template.entities.EntityRelationShip;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,12 +58,13 @@ public class EntityRelationShipDiagram extends ApplicationDocument{
 
     private void addDrawing(IDocument doc) {
 
-        Drawing drawing = new Drawing(drawingTitle);
+        Concept concept = new Concept(drawingTitle, Object.class);
+        Drawing drawing = new Drawing(concept);
         for (Entity entity :entities){
-            drawing.addConcept(new Concept(entity.getName()));
+            drawing.addConcept(new Concept(entity.getName(), entity.getClass()));
         }
         for (EntityRelationShip entityRelationShip :entityRelationShips){
-            drawing.addLine(new Concept(entityRelationShip.getFromEntity().getName()), entityRelationShip.getRelationShipText(), new Concept(entityRelationShip.getToEntity().getName()));
+            drawing.addLine(new Concept(entityRelationShip.getFromEntity().getName(), entityRelationShip.getClass()), entityRelationShip.getRelationShipText(), new Concept(entityRelationShip.getToEntity().getName(), entityRelationShip.getClass()));
         }
         doc.addDrawing(drawing);
 

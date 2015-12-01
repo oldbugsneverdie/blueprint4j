@@ -1,11 +1,7 @@
 package com.blueprint4j.template.entities;
 
 import com.blueprint4j.core.app.ApplicationItem;
-import com.blueprint4j.core.translate.Translator;
 
-/**
- * Created by jan on 29-6-14.
- */
 public class EntityRelationShip extends ApplicationItem {
 
     private Entity fromEntity;

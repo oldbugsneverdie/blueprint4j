@@ -1,8 +1,7 @@
 package com.blueprint4j.template.servers;
 
 import com.blueprint4j.core.app.ApplicationItem;
-import com.blueprint4j.core.app.Concept;
-import com.blueprint4j.core.draw.Image;
+import com.blueprint4j.template.software.SoftwareModule;
 
 import java.util.ArrayList;
 import java.util.List;
