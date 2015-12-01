@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.blueprint4j.core.app.ApplicationItem;
 import com.blueprint4j.core.app.Concept;
-import com.blueprint4j.core.translate.Translator;
+import com.blueprint4j.core.doc.AnnotationDelegate;
 
 /**
  * A drawing is a set of Concepts, linked by Lines
@@ -16,9 +16,13 @@ public class Drawing extends ApplicationItem{
 
 	private List<Concept> concepts = new ArrayList<Concept>();
 	private List<Line> lines = new ArrayList<Line>();
-	
-	public Drawing(String name) {
-		super(name);
+    private AnnotationDelegate annotationDelegate = new AnnotationDelegate();
+    private Concept mainConcept;
+
+	public Drawing(Concept mainConcept) {
+		super(mainConcept.getName());
+        this.mainConcept = mainConcept;
+        addConcept(mainConcept);
 	}
 
     public void addConcept(Concept concept) {
@@ -39,7 +43,6 @@ public class Drawing extends ApplicationItem{
 		return lines;
 	}
 
-
     public String getFileName() {
         return getName()+"png";
     }
@@ -52,8 +55,8 @@ public class Drawing extends ApplicationItem{
          rootNode);
          */
         Drawing drawing = this;
-        DiagramHelper.Node diagramNode = diagramHelper.createRootNode(drawing.getName());
-        for (Concept concept : drawing.getConcepts()) {
+        Node diagramNode = diagramHelper.createRootNode(mainConcept);
+        //for (Concept concept : drawing.getConcepts()) {
 
             //DiagramHelper.Node blockNode=null;
             //if (concept.getImage()==null){
@@ -61,24 +64,22 @@ public class Drawing extends ApplicationItem{
             //}else {
             //    blockNode = diagramHelper.createNode(concept.getName(),diagramNode, concept.getImage().getImageName());
             //}
-            createNode(concept, diagramNode, diagramHelper);
+            createNode(mainConcept, diagramNode, diagramHelper, true);
 
-
-        }
+       //}
 
         for (Line line : drawing.getLines()) {
-            String arrowTail = DiagramHelper.ARROW_HEAD_NONE;
+            String arrowTail = DiagramHelper.ARROW_HEAD_NORMAL;
             String arrowHead = DiagramHelper.ARROW_HEAD_NORMAL;
 
-            String fromEntityName = line.getFromApplicationItem().getName();
-            String toEntityName = line.getToApplicationItem().getName();
             String label = diagramHelper.wrapLabelOverMultipleLines(line
                     .getName());
 
-            diagramHelper.createArrow(fromEntityName, arrowTail,
-                    toEntityName, arrowHead, label);
+            diagramHelper.createArrow(line.getFromConcept(), arrowTail,
+                    line.getToConcept(), arrowHead, label);
 
         }
+
 
         String dotScript = diagramHelper.getDiagramScript();
         String imageName = drawing.getName() + ".png";
@@ -92,11 +93,16 @@ public class Drawing extends ApplicationItem{
 
     }
 
-    private void createNode(Concept concept, DiagramHelper.Node parentNode, DiagramHelper diagramHelper) {
-        DiagramHelper.Node newNode = diagramHelper.createNode(concept.getName(),parentNode);
+    private void createNode(Concept concept, Node parentNode, DiagramHelper diagramHelper, boolean isTopNode) {
+        Node newNode;
+        if (isTopNode){
+            newNode = parentNode;
+        } else {
+            newNode = diagramHelper.createNode(concept, parentNode);
+        }
         if (concept.hasSubConcepts()){
             for(Concept subConcept:concept.getSubConcepts()){
-                createNode(subConcept,newNode, diagramHelper);
+                createNode(subConcept,newNode, diagramHelper, false);
             }
         }
     }

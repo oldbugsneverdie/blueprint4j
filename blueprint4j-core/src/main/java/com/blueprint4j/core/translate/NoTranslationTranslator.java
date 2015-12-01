@@ -1,13 +1,11 @@
 package com.blueprint4j.core.translate;
 
+import com.blueprint4j.core.app.ApplicationItem;
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import com.blueprint4j.core.app.ApplicationItem;
-
 
 /**
  * Translator that does not do any translations.

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.blueprint4j.core.util.FileUtils;
-import org.apache.log4j.Logger;
 
 import com.blueprint4j.core.app.ApplicationItem;
 
@@ -28,7 +27,6 @@ public class BasicTranslator implements Translator {
     private Map<String, String> translations = new HashMap<String, String>();
 	private Map<String, String> toBeTranslated = new HashMap<String, String>();
 	private String language;
-	private static Logger LOG = Logger.getLogger(BasicTranslator.class);
 	private String translationFileName;
 
 
@@ -53,7 +51,6 @@ public class BasicTranslator implements Translator {
 
 	}
 
-    @Override
     public void loadTranslations(File outputDirectory) {
 
         try {
@@ -69,7 +66,6 @@ public class BasicTranslator implements Translator {
     }
 
 
-    @Override
 	public String getLanguage() {
 		return language;
 	}
@@ -129,7 +125,6 @@ public class BasicTranslator implements Translator {
 		return result;
 	}
 
-	@Override
 	public void saveTranslationFile() throws IOException {
 		translations.putAll(toBeTranslated);
 		saveTranslationFile(translationFileName, translations);
@@ -172,21 +167,18 @@ public class BasicTranslator implements Translator {
 		return toBeTranslated.size();
 	}
 
-    @Override
     public void translateNameAndDescriptions(List<ApplicationItem> applicationItems) {
         for (ApplicationItem applicationItem:applicationItems){
             translateNameAndDescription(applicationItem);
         }
     }
 
-    @Override
     public void translateNameAndDescription(ApplicationItem applicationItem) {
         applicationItem.setName(translate(applicationItem.getName()));
         applicationItem.setDescription(translate(applicationItem.getDescription()));
     }
 
 
-    @Override
 	public String translate(String text) {
 		return getTranslation(text);
 	}

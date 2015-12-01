@@ -61,7 +61,8 @@ public class DotRunner {
 		}
 		log.info("Create image for: " + dotScriptName);
 
-		 ProcessBuilder pb = new ProcessBuilder(pathToDot, "-Tpng",  "-o" + dotOutputName, dotScriptName);
+//		 ProcessBuilder pb = new ProcessBuilder(pathToDot, "-Tpng", "-Kfdp",  "-o" + dotOutputName, dotScriptName);
+         ProcessBuilder pb = new ProcessBuilder(pathToDot, "-Tpng",  "-o" + dotOutputName, dotScriptName);
 		 Map<String, String> env = pb.environment();
 		 env.put("VAR1", "myValue");
 		 try {

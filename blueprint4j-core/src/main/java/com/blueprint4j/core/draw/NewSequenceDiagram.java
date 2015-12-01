@@ -1,13 +1,11 @@
 package com.blueprint4j.core.draw;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.blueprint4j.core.app.ApplicationItem;
-import com.blueprint4j.core.translate.Translator;
 
 /**
  * Abstract base class for defining sequence diagrams.

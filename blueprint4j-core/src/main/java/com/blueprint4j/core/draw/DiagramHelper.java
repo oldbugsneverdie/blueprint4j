@@ -2,7 +2,6 @@ package com.blueprint4j.core.draw;
 
 import com.blueprint4j.core.app.Concept;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class DiagramHelper {
 	public static final String ARROW_HEAD_CROW = "crow";
 	public static final String ARROW_HEAD_NORMAL = "normal";
 
-	private Node rootNode = new Node("");
+	private Node rootNode = null;
 	private int clusterIndex = 0;
 	
 	private List<Arrow> arrowsList = new ArrayList<Arrow>();
@@ -39,34 +38,24 @@ public class DiagramHelper {
 		this.showLabels = showLabels;
 	}
 
-	public Node createRootNode(String name) {
-		rootNode.setName(name);
+	public Node createRootNode(Concept mainConcept) {
+		rootNode = new Node(mainConcept);
 		return rootNode;
 	}
 
-	public Node createNode(String name, Node parentNode) {
-		Node node = new Node(name);
+	public Node createNode(Concept concept, Node parentNode) {
+		Node node = new Node(concept);
 		parentNode.add(node);
 		return node;
 	}
 
-    public Node createNode(String name, Node parentNode, String imageName) {
-        Node node = new Node(name,imageName);
-        parentNode.add(node);
-        return node;
-    }
-
-    public void createArrow(String fromNodeName, String arrowTail, String toNodeName, String arrowHead, String label) {
-		Arrow arrow = new Arrow(fromNodeName, arrowTail, toNodeName, arrowHead, label);
-		arrowsList.add(arrow);
-	}
-
 	public String getDiagramScript() {
-		dotScript.append("digraph \""+rootNode.getName()+"\" {" + newline);
+		dotScript.append("digraph \""+rootNode.getName()+"\"{" + newline);
 		dotScript.append("nodesep=1.0 // increases the separation between nodes" + newline);
         dotScript.append("node [shape=box,style=filled,fillcolor=\"#C0D0C0\"]" + newline);
 		dotScript.append("edge [color=" + arrowColor + ", style=" + arrowStyle + "] //setup options" + newline);
-		
+        dotScript.append("graph [overlap=false,splines=true,compound=true, size=16]");
+
 		dotScript.append(getScriptForNode(rootNode));
 
 		//Add all nodes, to make sure they are displayed.
@@ -75,14 +64,31 @@ public class DiagramHelper {
 		for (Arrow arrow : arrowsList) {
 			dotScript.append(arrow.getArrowAsDotScript() + newline);
 		}
-
+        // Add invisible arrows to display components vertically
+        dotScript.append("{edge[style=invis]");
+        dotScript.append(makeVertical(rootNode));
+        dotScript.append("}");
 		//End of script
 		dotScript.append("}" + newline);
 
 		return dotScript.toString();
 	}
 
-	private StringBuffer getAllNodes(Node parentNode) {
+    private String makeVertical(Node rootNode) {
+         StringBuffer sb = new StringBuffer();
+        sb.append("{" + "\"" + rootNode.getName() + "\"");
+        if( rootNode.hasSubNodes()){
+            sb.append(" -> ");
+        }
+        sb.append( newline);
+        for (Node node : rootNode.getNodeList()) {
+            sb.append(makeVertical(node));
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
+    private StringBuffer getAllNodes(Node parentNode) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(parentNode.getName() + ";" + newline);
 		for (Node node : parentNode.getNodeList()) {
@@ -97,19 +103,28 @@ public class DiagramHelper {
 		sb.append(newline);
 		if (parentNode.getNodeList().isEmpty()){
             if(parentNode.hasImageName()){
-                sb.append("\"" + parentNode.getName()+"\"[shape=\"none\" style=\"\" image=\""+parentNode.getImageName()+"\"];" + newline);
+                sb.append("\"" + parentNode.getConcept().getTechnicalName()+"\"[shape=\"none\" style=\"\" image=\""+parentNode.getImageName()+"\"];" + newline);
             }else {
-			    sb.append("\"" + parentNode.getName()+"\";" + newline);
+			    sb.append("\"" + parentNode.getConcept().getTechnicalName()+"\";" + newline);
             }
 		} else {
 			clusterIndex++;
-			sb.append(indent + "subgraph cluster" + clusterIndex + " {"+ newline);
-			sb.append(indent + "label=\"" + parentNode.getName() + "\";" + newline);
-			for (Node node : parentNode.getNodeList()) {
+			sb.append(indent + "subgraph " + parentNode.getConcept().getTechnicalName() + " {"+ newline);
+			//sb.append(indent + "label=\"" + parentNode.getConcept().getName() + "\";" + newline);
+            // Instead of a label, create a node with text. This guarantees that we have at leaset one node in every cluster.
+            // This then will enable drawing lines directly to a cluster (using "lhead=<name_of_cluster>" on the arrow)
+            sb.append(indent + "\"" + parentNode.getConcept().getName() + "\"" + " [style=none,shape=plaintext];" + newline);
+            for (Node node : parentNode.getNodeList()) {
 				sb.append(getScriptForNode(node));
 			}
 			sb.append(indent + "} " + newline);
 		}
+
+        //TODO implement conceptProperties
+//        if (parentNode.getConcept().hasConceptProperties(){
+//
+//        }
+
 		sb.append(newline);
 		return sb;
 	}
@@ -180,60 +195,16 @@ public class DiagramHelper {
 		return arrowStyle;
 	}
 
-	public class Node {
-
-		private String name;
-		private List<Node> nodeList = new ArrayList<Node>();
-        private String imageName =null;
-		
-		public Node(String name) {
-			this.name=name;
-		}
-
-        public Node(String name, String imageName) {
-            this.name=name;
-            this.imageName = imageName;
-        }
-
-        public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getName() {
-			return name;
-		}
-		
-		public void add(Node node) {
-			nodeList.add(node);
-		}
-		
-		public List<Node> getNodeList() {
-			return nodeList;
-		}
-		
-		public Node createSubNode(String name) {
-			Node node = new Node(name);
-			nodeList.add(node);
-			return node;
-		}
-
-        public String getImageName() {
-            return imageName;
-        }
-
-        public void setImageName(String imageName) {
-            this.imageName = imageName;
-        }
-
-        public boolean hasImageName(){
-            return (imageName!=null);
-        }
+    public void createArrow(Concept fromConcept, String arrowTail, Concept toConcept, String arrowHead, String label) {
+        Arrow arrow = new Arrow(fromConcept, arrowHead, toConcept, arrowTail, label);
+        arrowsList.add(arrow);
     }
-	
-	public class Box extends Node {
 
-		public Box(String name) {
-			super(name);
+
+    public class Box extends Node {
+
+		public Box(Concept concept) {
+			super(concept);
 		}
 
 	}
@@ -242,15 +213,22 @@ public class DiagramHelper {
 		private String color = "Blue";
 		private String style = "dashed";
 		private String fontSize = "10";
-		private String fromNode;
-		private String toNode;
-		private String fromArrowHead = ARROW_HEAD_NONE;
-		private String toArrowHead = ARROW_HEAD_NONE;
+		private Concept fromConcept;
+		private Concept toConcept;
+		private String fromArrowHead = ARROW_HEAD_NORMAL;
+		private String toArrowHead = ARROW_HEAD_NORMAL;
 		private String label = "";
 
 		public String getArrowAsDotScript() {
-			return "\"" + this.getFromNode() + "\"" +" -> " + "\"" +this.getToNode() + "\"" +" ["+ getArrowTail() + getArrowHead() + " label= \""
-			+ this.getLabel() + "\", fontsize=\"" + this.getFontSize() + "\"]";
+            // Arrows directed to clusters, are actually directed at the always present invisible node, and then
+            // an "lhead" property is added as a trick to make the arrow land on the edge of the cluster.
+            if (toConcept.hasSubConcepts()){
+                return "\"" + fromConcept.getTechnicalName() + "\"" + " -> " + "\"" + toConcept.getName() + "\"" + " [" + getArrowTail() + getArrowHead() + " label= \""
+                        + this.getLabel() + "\", fontsize=\"" + this.getFontSize() + "\", lhead=\"" + toConcept.getTechnicalName() + "\"]";
+            } else {
+                return "\"" + fromConcept.getTechnicalName() + "\"" + " -> " + "\"" + toConcept.getTechnicalName() + "\"" + " [" + getArrowTail() + getArrowHead() + " label= \""
+                        + this.getLabel() + "\", fontsize=\"" + this.getFontSize() + "\"]";
+            }
 		}
 
 		private String getArrowTail() {
@@ -268,27 +246,15 @@ public class DiagramHelper {
 			}
 		}
 
-		public Arrow(String fromNode, String toNode) {
-			init(fromNode, fromArrowHead, toNode, toArrowHead, label);
-		}
-
-		public Arrow(String fromNodeName, String toNodeName, String label) {
-			init(fromNodeName, fromArrowHead, toNodeName, toArrowHead, label);
-		}
-
-		public Arrow(String fromNode, String fromArrowHead, String toNode, String toArrowHead) {
-			init(fromNode, fromArrowHead, toNode, toArrowHead, label);
-		}
-
-		public Arrow(String fromNode, String fromArrowHead, String toNode, String toArrowHead, String label) {
-			init(fromNode, fromArrowHead, toNode, toArrowHead, label);
+        public Arrow(Concept fromConcept, String fromArrowHead, Concept toConcept, String toArrowHead, String label) {
+			init(fromConcept, fromArrowHead, toConcept, toArrowHead, label);
 		}
 
 
-		private void init(String fromNode, String fromArrowHead, String toNode, String toArrowHead, String label) {
-			this.fromNode = fromNode;
+		private void init(Concept fromConcept, String fromArrowHead, Concept toConcept, String toArrowHead, String label) {
+			this.fromConcept = fromConcept;
 			this.fromArrowHead = fromArrowHead;
-			this.toNode = toNode;
+			this.toConcept = toConcept;
 			this.toArrowHead = toArrowHead;
 			this.label = label;
 		}
@@ -307,22 +273,6 @@ public class DiagramHelper {
 
 		public void setStyle(String style) {
 			this.style = style;
-		}
-
-		public String getFromNode() {
-			return fromNode;
-		}
-
-		public void setFromNode(String fromNode) {
-			this.fromNode = fromNode;
-		}
-
-		public String getToNode() {
-			return toNode;
-		}
-
-		public void setToNode(String toNode) {
-			this.toNode = toNode;
 		}
 
 		public String getFromArrowHead() {

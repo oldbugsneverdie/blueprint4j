@@ -1,12 +1,7 @@
 package com.blueprint4j.core.app;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
-
-import com.blueprint4j.core.translate.Translator;
 
 /**
  * The place that holds all the Blueprint's

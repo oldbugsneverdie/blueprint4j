@@ -1,6 +1,5 @@
 package com.blueprint4j.core.app;
 
-import com.blueprint4j.core.doc.ApplicationDocument;
 import com.blueprint4j.core.translate.Translator;
 
 import java.util.ArrayList;

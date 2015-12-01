@@ -22,7 +22,6 @@ public class HTMLTable implements ITable {
 		this.cssClass = cssClass;
 	}
 
-	@Override
 	public HTMLTableRow addTableRow() {
 
 		HTMLTableRow row = new HTMLTableRow();
@@ -31,7 +30,6 @@ public class HTMLTable implements ITable {
 
 	}
 
-	@Override
 	public HTMLTableRow addTableRow(boolean isHeaderRow) {
 
 		HTMLTableRow row = new HTMLTableRow(isHeaderRow);
@@ -40,7 +38,6 @@ public class HTMLTable implements ITable {
 
 	}
 
-	@Override
 	public String getContent() {
 		content.append("<table class=" + cssClass + ">");
 		for (HTMLTableRow row : rows) {

@@ -1,29 +1,37 @@
 package com.blueprint4j.core.draw;
 
-import com.blueprint4j.core.app.ApplicationItem;
+import com.blueprint4j.core.app.Concept;
 
 public class Line {
 
-	private ApplicationItem fromApplicationItem;
-	private ApplicationItem toApplicationItem;
+	private Concept fromConcept;
+	private Concept toConcept;
 	private String name;
 	
-	public Line(ApplicationItem fromApplicationItem, String name, ApplicationItem toApplicationItem) {
-		this.fromApplicationItem = fromApplicationItem;
-		this.toApplicationItem = toApplicationItem;
+	public Line(Concept fromConcept, String name, Concept toConcept) {
+		this.fromConcept = fromConcept;
+		this.toConcept = toConcept;
 		this.name = name;
+        checkNotNull(fromConcept, "fromConcept can not be nuil: " + name);
+        checkNotNull(toConcept, "toConcept can not be nuil: " + name);
 	}
-	
-	public String getName(){
+
+    private void checkNotNull(Concept concept, String errorMessage) {
+        if (concept == null){
+            throw new RuntimeException(errorMessage);
+        }
+    }
+
+    public String getName(){
 		return name;
 	}
 
-	public ApplicationItem getFromApplicationItem() {
-		return fromApplicationItem;
+	public Concept getFromConcept() {
+		return fromConcept;
 	}
 
-	public ApplicationItem getToApplicationItem() {
-		return toApplicationItem;
+	public Concept getToConcept() {
+		return toConcept;
 	}
 
 

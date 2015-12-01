@@ -151,8 +151,8 @@ public abstract class BasicDiagramCreator implements DrawingApplication{
 		private String fontSize = "10";
 		private String fromNode;
 		private String toNode;
-		private String fromArrowHead = ARROW_HEAD_NONE;
-		private String toArrowHead = ARROW_HEAD_NONE;
+		private String fromArrowHead = ARROW_HEAD_NORMAL;
+		private String toArrowHead = ARROW_HEAD_NORMAL;
 		private String label = "";
 		private Long  fromClusterName = null;
 		private Long toClusterName = null;

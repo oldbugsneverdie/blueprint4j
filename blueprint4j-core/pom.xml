@@ -7,6 +7,20 @@
     <version>0.1-SNAPSHOT</version>
     <name>blueprint4j-core</name>
     <url>http://maven.apache.org</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -19,21 +33,11 @@
             <artifactId>log4j</artifactId>
             <version>1.2.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.9-RC1</version>
+        </dependency>
     </dependencies>
-  
-    <build>
-        <plugins>
-            <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.1</version>
-            <configuration>
-                <verbose>true</verbose>
-                <fork>true</fork>
-                <compilerVersion>1.6</compilerVersion>
-            </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
