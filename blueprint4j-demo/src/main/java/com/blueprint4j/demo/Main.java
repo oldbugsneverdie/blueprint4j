@@ -1,11 +1,6 @@
 package com.blueprint4j.demo;
 
-import com.blueprint4j.core.doc.ApplicationDocumentList;
-import com.blueprint4j.core.doc.DocumentGeneratorList;
-import com.blueprint4j.core.doc.DocumentationSet;
-import com.blueprint4j.core.doc.html.HTMLDocumentGenerator;
-import com.blueprint4j.core.translate.BasicTranslator;
-import com.blueprint4j.core.translate.TranslatorList;
+import com.blueprint4j.core.doc.ProjectDocumentation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,48 +33,20 @@ public class Main {
     public static String outputDirectory = configFile.getProperty("outputDirectory");
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException {
 
 		/* Read output directory from properties, otherwise use current dir*/
-        File outputDir = new File(outputDirectory);
-        if (outputDir ==null && !outputDir.exists()){
-            outputDir = new File(System.getProperty("user.dir"));
-        }
+		File outputDir = new File(System.getProperty("user.dir"));
+		if (outputDirectory == null) {
+			System.out.println("No 'outputDirectory' set, using default output directory: " + outputDir);
+		} else {
+			outputDir = new File(outputDirectory);
+		}
+		System.out.println("Output directory: " + outputDir);
 
         /* Define the project documentation */
-        DocumentationSet documentationSet = new DocumentationSet(outputDir) {
-
-            @Override
-            public ApplicationDocumentList getApplicationDocumentList() {
-
-                ApplicationDocumentList applicationDocumentList = new ApplicationDocumentList();
-                applicationDocumentList.add(new MyEntityRelationShipDiagram());
-                applicationDocumentList.add(new MyServerDiagram());
-                applicationDocumentList.add(new MyMockup());
-                return applicationDocumentList;
-
-            }
-
-            @Override
-            public TranslatorList getTranslatorList() throws IOException {
-                TranslatorList translatorList = new TranslatorList();
-                translatorList.add(new BasicTranslator("NL"));
-                translatorList.add(new BasicTranslator("FR"));
-                return translatorList;
-            }
-
-            @Override
-            public DocumentGeneratorList getDocumentGeneratorList() {
-
-                DocumentGeneratorList documentGeneratorList = new DocumentGeneratorList();
-                documentGeneratorList.add(new HTMLDocumentGenerator());
-                return documentGeneratorList;
-
-            }
-        };
-
-        /* Generate documents */
-        documentationSet.generate();
+        ProjectDocumentation projectDocumentation = new ProjectDocumentation(outputDir);
+        projectDocumentation.generate("com.blueprint4j.demo", "NL,FR");
 
 	}
 }

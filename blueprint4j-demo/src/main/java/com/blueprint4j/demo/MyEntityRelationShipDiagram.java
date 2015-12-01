@@ -1,10 +1,8 @@
 package com.blueprint4j.demo;
 
-import com.blueprint4j.core.draw.Drawing;
-import com.blueprint4j.core.draw.Line;
 import com.blueprint4j.template.entities.Entity;
 import com.blueprint4j.template.entities.EntityRelationShip;
-import com.blueprint4j.template.entities.EntityRelationShipDiagram;
+import com.blueprint4j.template.diagram.EntityRelationShipDiagram;
 
 public class MyEntityRelationShipDiagram extends EntityRelationShipDiagram{
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd ../blueprint4j-core
 mvn clean install
 cd ../blueprint4j-templates

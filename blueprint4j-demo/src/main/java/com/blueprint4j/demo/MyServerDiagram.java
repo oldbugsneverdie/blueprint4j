@@ -1,10 +1,9 @@
 package com.blueprint4j.demo;
 
-import com.blueprint4j.core.doc.ApplicationDocument;
 import com.blueprint4j.template.servers.Environment;
 import com.blueprint4j.template.servers.Server;
-import com.blueprint4j.template.servers.ServerDiagram;
-import com.blueprint4j.template.servers.SoftwareModule;
+import com.blueprint4j.template.diagram.ServerDiagram;
+import com.blueprint4j.template.software.SoftwareModule;
 
 public class MyServerDiagram extends ServerDiagram {
 
